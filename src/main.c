@@ -1,7 +1,7 @@
-#include <gdk/gdk.h>
+//#include <gdk/gdk.h>
 #include <gtk-3.0/gtk/gtk.h>
 
-#include <gdk/gdk.h>
+//#include <gdk/gdk.h>
 #if defined GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
 #elif defined GDK_WINDOWING_WIN32
@@ -16,23 +16,24 @@
 #include <string.h>
 
 static guintptr video_window_handle = 0;
-GtkWidget *video_window;
-GtkWidget *main_window;
+GtkWidget* video_window;
+GtkWidget* main_window;
 
 GstElement *pipeline, *src, *sink;
-GstBus *bus;
+GstBus* bus;
 
-static void video_widget_realize_cb(GtkWidget *widget, gpointer data);
-static GstBusSyncReply bus_sync_handler(GstBus *bus, GstMessage *message,
+static void video_widget_realize_cb(GtkWidget* widget, gpointer data);
+static GstBusSyncReply bus_sync_handler(GstBus* bus,
+                                        GstMessage* message,
                                         gpointer user_data);
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   gst_init(&argc, &argv);
   gtk_init(&argc, &argv);
 
   pipeline = gst_element_factory_make("playbin", "play");
 
-  const char *initVideo = "file:///home/onionhuang/Videos/01.webm";
+  const char* initVideo = "file:///home/onionhuang/Videos/01.webm";
   //  g_object_set(G_OBJECT(pipeline), "uri",
   //               "http://docs.gstreamer.com/media/sintel_trailer-480p.webm",
   //               NULL);
@@ -67,7 +68,7 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-static void video_widget_realize_cb(GtkWidget *widget, gpointer data) {
+static void video_widget_realize_cb(GtkWidget* widget, gpointer data) {
 #if defined GDK_WINDOWING_WIN32
   video_window_handle =
       (guintptr)GDK_WINDOW_HWND(gtk_widget_get_window(video_window));
@@ -79,7 +80,8 @@ static void video_widget_realize_cb(GtkWidget *widget, gpointer data) {
 #endif
 }
 
-static GstBusSyncReply bus_sync_handler(GstBus *bus, GstMessage *message,
+static GstBusSyncReply bus_sync_handler(GstBus* bus,
+                                        GstMessage* message,
                                         gpointer user_data) {
   // ignore anything but 'prepare-window-handle' element messages
   if (!gst_is_video_overlay_prepare_window_handle_message(message)) {
@@ -87,7 +89,7 @@ static GstBusSyncReply bus_sync_handler(GstBus *bus, GstMessage *message,
   }
 
   if (video_window_handle != 0) {
-    GstVideoOverlay *overlay;
+    GstVideoOverlay* overlay;
 
     // GST_MESSAGE_SRC (message) will be the video sink element
     overlay = GST_VIDEO_OVERLAY(GST_MESSAGE_SRC(message));
